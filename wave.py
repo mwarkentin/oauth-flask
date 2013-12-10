@@ -1,7 +1,7 @@
 import json
 import os
 
-from flask import Flask, flash, request, redirect, render_template, url_for
+from flask import Flask, flash, request, redirect, render_template, session, url_for
 
 from rauth.service import OAuth2Service
 
@@ -34,6 +34,22 @@ wave = OAuth2Service(name='wave',
 def index():
     return render_template('login.html')
 
+@app.route('/about')
+def about():
+    if session.has_key('token'):
+        auth = wave.get_session(token = session['token'])
+        resp = auth.get('user')
+        if resp.status_code == 200:
+            user = resp.json()
+
+        resp = auth.get('businesses')
+        if resp.status_code == 200:
+            businesses = resp.json()
+
+        return render_template('about.html', user=user, businesses=businesses)
+    else:
+        return redirect(url_for('login'))
+
 @app.route('/wave/login')
 def login():
     redirect_uri = url_for('authorized', _external=True)
@@ -59,10 +75,9 @@ def authorized():
         grant_type='authorization_code'
     )
 
-    session = wave.get_auth_session(data=data, decoder=json.loads)
-    user = session.get('user').json()
-    flash('Logged in to Wave with {}.'.format(user['emails'][0]['email']))
-    return redirect(url_for('index'))
+    auth = wave.get_auth_session(data=data, decoder=json.loads)
+    session['token'] = auth.access_token
+    return redirect(url_for('about'))
 
 
 if __name__ == '__main__':

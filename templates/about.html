@@ -1,0 +1,15 @@
+<!doctype html>
+<title>About</title>
+
+<h1>About you</h1>
+Welcome {{user.emails[0].email}}
+<br />
+
+<h2>Businesses</h2>
+<ul>
+    {% for business in businesses %}
+        <li>
+            {{ business.company_name }}
+        </li>
+    {% endfor %}
+</ul>
