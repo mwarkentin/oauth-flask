@@ -42,7 +42,6 @@ def login():
         'response_type': 'code',
         'scope': 'user.read business.read account.read invoice.read'
     }
-    print redirect_uri, wave.get_authorize_url(**params)
     return redirect(wave.get_authorize_url(**params))
 
 @app.route('/wave/authorized')
