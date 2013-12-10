@@ -40,6 +40,7 @@ def login():
     params = {
         'redirect_uri': redirect_uri,
         'response_type': 'code',
+        'scope': 'user.read business.read account.read invoice.read'
     }
     print redirect_uri, wave.get_authorize_url(**params)
     return redirect(wave.get_authorize_url(**params))
@@ -60,14 +61,8 @@ def authorized():
     )
 
     session = wave.get_auth_session(data=data, decoder=json.loads)
-
-    # the "me" response
-    # me = session.get('me').json()
-
-    # User.get_or_create(me['username'], me['id'])
-
-    # flash('Logged in as ' + me['name'])
-    flash('Logged in to Wave.')
+    user = session.get('user').json()
+    flash('Logged in to Wave with {}.'.format(user['emails'][0]['email']))
     return redirect(url_for('index'))
 
 
