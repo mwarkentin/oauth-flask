@@ -37,7 +37,7 @@ def index():
 @app.route('/about')
 def about():
     if session.has_key('token'):
-        auth = wave.get_session(token = session['token'])
+        auth = wave.get_session(token=session['token'])
         resp = auth.get('user')
         if resp.status_code == 200:
             user = resp.json()
