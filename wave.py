@@ -41,10 +41,14 @@ def about():
         resp = auth.get('user')
         if resp.status_code == 200:
             user = resp.json()
+        else:
+            return redirect(url_for('login'))
 
         resp = auth.get('businesses')
         if resp.status_code == 200:
             businesses = resp.json()
+        else:
+            return redirect(url_for('login'))
 
         return render_template('about.html', user=user, businesses=businesses)
     else:
